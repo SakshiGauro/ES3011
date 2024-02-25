@@ -3,7 +3,7 @@
 
 // TEST PARAMETERS
 #define INITAL_REV 1
-#define MAX_REV 15
+#define MAX_REV 5
 #define REV_INCREMENT 1
 #define MOTOR_NUM 1
 // #define MOTOR_NUM 3
@@ -148,9 +148,13 @@ void setup() {
     Wire.begin(); // INIT DEVICE AS I2C CONTROLLER
 }
 
+#define WHEEL_DIAM 3.2 // cm
+#define GOAL_DIST 5
+
 void loop() {
     // SET THE DATA ARRAY
     int32_t targetPos=rev * SHAFT_REV_TO_ENCODER_TICKS;
+    // int32_t targetPos= (SHAFT_REV_TO_ENCODER_TICKS / (WHEEL_DIAM * 3.14159)) * rev; // 
 
     // FOR EACH MOTOR ADDRESS
     for (int i = 0; i < MOTOR_NUM; i++) {
