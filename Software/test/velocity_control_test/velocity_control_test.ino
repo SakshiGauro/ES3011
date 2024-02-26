@@ -183,21 +183,24 @@ void loop() {
             // }
             // targetVel += (increasing targetVel < MAX_RPM)? RPM_INCREMENT : -RPM_INCREMENT;
 
-            if (increasing && abs(targetVel) < MAX_RPM) {
+            if (increasing && targetVel <= MAX_RPM) {
               targetVel += RPM_INCREMENT;
-            } else if (!increasing && abs(targetVel) < MAX_RPM) {
+              count = 0;
+            } else if (!increasing && targetVel >= -MAX_RPM) {
               targetVel -= RPM_INCREMENT;
+              count = 0;
             }
             // WHAT TO IMPLEMENT: 
             // encoder count tracking. either make sure that encoder count is properly reset 
             // or track og count and find difference
             // TOGGLE MOTOR DIRECTION
-            if (abs(targetVel) >= MAX_RPM) {
-              count = 0;
-            }
+            // if (abs(targetVel) >= MAX_RPM) {
+            //   count = 0;
+            // }
+            Serial.print("count: ");
+            Serial.println(count);
             if ((increasing && targetVel >= MAX_RPM) || (!increasing && targetVel <= -MAX_RPM)) {
-              Serial.print("count: ");
-              Serial.println(count);
+              
               count++;
               if (count >= MAX_ENCODER_COUNT) {
                 increasing = !increasing;
