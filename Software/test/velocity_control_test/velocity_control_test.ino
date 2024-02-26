@@ -3,10 +3,10 @@
 
 // TEST PARAMETERS
 #define INITIAL_RPM 35.0
-#define MAX_RPM 70.0
-#define RPM_INCREMENT 15.0
+#define MAX_RPM 50.0
+#define RPM_INCREMENT 10.0
 #define MOTOR_NUM 1
-#define MAX_ENCODER_COUNT 9000
+#define MAX_ENCODER_COUNT 4
 // #define MOTOR_NUM 3
 
 // MOTOR PROPERTIES
@@ -150,6 +150,8 @@ void setup() {
     encoderCount = 0;
 }
 
+int32_t currentEncCount = 0;
+int32_t count = 0;
 void loop() {
 
     // FOR EACH MOTOR ADDRESS
@@ -176,17 +178,30 @@ void loop() {
             Serial.println(motorCurrent);
         
             // INCREMENT THE RPM VALUE
-            targetVel += (increasing)? RPM_INCREMENT : -RPM_INCREMENT;
+            // if (increasing) {
+            //   currentEncCount = encoderCount;
+            // }
+            // targetVel += (increasing targetVel < MAX_RPM)? RPM_INCREMENT : -RPM_INCREMENT;
 
+            if (increasing && abs(targetVel) < MAX_RPM) {
+              targetVel += RPM_INCREMENT;
+            } else if (!increasing && abs(targetVel) < MAX_RPM) {
+              targetVel -= RPM_INCREMENT;
+            }
             // WHAT TO IMPLEMENT: 
             // encoder count tracking. either make sure that encoder count is properly reset 
             // or track og count and find difference
             // TOGGLE MOTOR DIRECTION
+            if (abs(targetVel) >= MAX_RPM) {
+              count = 0;
+            }
             if ((increasing && targetVel >= MAX_RPM) || (!increasing && targetVel <= -MAX_RPM)) {
-              Serial.print("ENCODER IN LOOP: ");
-              Serial.println(encoderCount);
-              if (encoderCount >= MAX_ENCODER_COUNT) {
+              Serial.print("count: ");
+              Serial.println(count);
+              count++;
+              if (count >= MAX_ENCODER_COUNT) {
                 increasing = !increasing;
+                count = 0;
               }
               
             }
